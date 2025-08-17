@@ -1,0 +1,267 @@
+import jwt from 'jsonwebtoken';
+import User from '../models/User.js';
+import { logger } from '../utils/logger.js';
+
+// Generate JWT token
+const generateToken = (userId) => {
+  return jwt.sign({ userId }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN || '7d'
+  });
+};
+
+// Set token in HTTP-only cookie
+const setTokenCookie = (res, token) => {
+  res.cookie('token', token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+  });
+};
+
+// Register new user
+export const register = async (req, res) => {
+  try {
+    const { username, email, password, firstName, lastName } = req.body;
+
+    // Check if user already exists
+    const existingUser = await User.findOne({
+      $or: [{ email }, { username }]
+    });
+
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: existingUser.email === email 
+          ? 'Email already registered' 
+          : 'Username already taken'
+      });
+    }
+
+    // Create new user
+    const user = new User({
+      username,
+      email,
+      password,
+      firstName,
+      lastName
+    });
+
+    await user.save();
+
+    // Generate token
+    const token = generateToken(user._id);
+    setTokenCookie(res, token);
+
+    // Log successful registration
+    logger.info(`New user registered: ${user.email}`);
+
+    res.status(201).json({
+      success: true,
+      message: 'User registered successfully',
+      user: user.getProfile(),
+      token
+    });
+
+  } catch (error) {
+    logger.error('Registration error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+};
+
+// Login user
+export const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Find user by email or username
+    const user = await User.findOne({
+      $or: [
+        { email: email.toLowerCase() },
+        { username: email }
+      ]
+    });
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid credentials'
+      });
+    }
+
+    // Check if user is active
+    if (!user.isActive) {
+      return res.status(401).json({
+        success: false,
+        message: 'Account is deactivated'
+      });
+    }
+
+    // Verify password
+    const isPasswordValid = await user.comparePassword(password);
+    if (!isPasswordValid) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid credentials'
+      });
+    }
+
+    // Update last login
+    user.lastLogin = new Date();
+    await user.save();
+
+    // Generate token
+    const token = generateToken(user._id);
+    setTokenCookie(res, token);
+
+    // Log successful login
+    logger.info(`User logged in: ${user.email}`);
+
+    res.json({
+      success: true,
+      message: 'Login successful',
+      user: user.getProfile(),
+      token
+    });
+
+  } catch (error) {
+    logger.error('Login error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+};
+
+// Logout user
+export const logout = async (req, res) => {
+  try {
+    // Clear the token cookie
+    res.clearCookie('token');
+    
+    logger.info(`User logged out: ${req.user?.email || 'unknown'}`);
+    
+    res.json({
+      success: true,
+      message: 'Logout successful'
+    });
+  } catch (error) {
+    logger.error('Logout error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error'
+    });
+  }
+};
+
+// Get current user profile
+export const getProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId);
+    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    res.json({
+      success: true,
+      user: user.getProfile()
+    });
+
+  } catch (error) {
+    logger.error('Get profile error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error'
+    });
+  }
+};
+
+// Update user profile
+export const updateProfile = async (req, res) => {
+  try {
+    const { firstName, lastName } = req.body;
+    const updates = {};
+
+    if (firstName !== undefined) updates.firstName = firstName;
+    if (lastName !== undefined) updates.lastName = lastName;
+
+    const user = await User.findByIdAndUpdate(
+      req.user.userId,
+      updates,
+      { new: true, runValidators: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    logger.info(`Profile updated for user: ${user.email}`);
+
+    res.json({
+      success: true,
+      message: 'Profile updated successfully',
+      user: user.getProfile()
+    });
+
+  } catch (error) {
+    logger.error('Update profile error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error'
+    });
+  }
+};
+
+// Change password
+export const changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+
+    const user = await User.findById(req.user.userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    // Verify current password
+    const isCurrentPasswordValid = await user.comparePassword(currentPassword);
+    if (!isCurrentPasswordValid) {
+      return res.status(400).json({
+        success: false,
+        message: 'Current password is incorrect'
+      });
+    }
+
+    // Update password
+    user.password = newPassword;
+    await user.save();
+
+    logger.info(`Password changed for user: ${user.email}`);
+
+    res.json({
+      success: true,
+      message: 'Password changed successfully'
+    });
+
+  } catch (error) {
+    logger.error('Change password error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error'
+    });
+  }
+};

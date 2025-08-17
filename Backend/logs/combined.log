@@ -1,0 +1,33 @@
+{"level":"info","message":"Server is running on port 3560","service":"ciphera-backend","timestamp":"2025-08-17 18:11:34"}
+{"level":"info","message":"Environment: development","service":"ciphera-backend","timestamp":"2025-08-17 18:11:34"}
+{"level":"info","message":"Server is running on port 3560","service":"ciphera-backend","timestamp":"2025-08-17 18:12:35"}
+{"level":"info","message":"Environment: development","service":"ciphera-backend","timestamp":"2025-08-17 18:12:35"}
+{"level":"info","message":"Server is running on port 3560","service":"ciphera-backend","timestamp":"2025-08-17 19:41:44"}
+{"level":"info","message":"Environment: development","service":"ciphera-backend","timestamp":"2025-08-17 19:41:44"}
+{"level":"info","message":"SIGINT received, shutting down gracefully","service":"ciphera-backend","timestamp":"2025-08-17 19:53:15"}
+{"level":"info","message":"Server is running on port 3560","service":"ciphera-backend","timestamp":"2025-08-17 18:59:11"}
+{"level":"info","message":"Environment: development","service":"ciphera-backend","timestamp":"2025-08-17 18:59:11"}
+{"level":"info","message":"Server is running on port 3560","service":"ciphera-backend","timestamp":"2025-08-17 19:00:40"}
+{"level":"info","message":"Environment: development","service":"ciphera-backend","timestamp":"2025-08-17 19:00:40"}
+{"level":"info","message":"SIGINT received, shutting down gracefully","service":"ciphera-backend","timestamp":"2025-08-17 19:00:57"}
+{"level":"info","message":"Server is running on port 3560","service":"ciphera-backend","timestamp":"2025-08-17 19:09:06"}
+{"level":"info","message":"Environment: development","service":"ciphera-backend","timestamp":"2025-08-17 19:09:06"}
+{"level":"info","message":"Server is running on port 3560","service":"ciphera-backend","timestamp":"2025-08-17 19:09:10"}
+{"level":"info","message":"Environment: development","service":"ciphera-backend","timestamp":"2025-08-17 19:09:10"}
+{"ip":"::1","level":"info","message":"GET /api-docs","service":"ciphera-backend","timestamp":"2025-08-17 19:10:21","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"}
+{"level":"info","message":"::1 - - [17/Aug/2025:17:10:21 +0000] \"GET /api-docs HTTP/1.1\" 301 158 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36\"","service":"ciphera-backend","timestamp":"2025-08-17 19:10:21"}
+{"ip":"::1","level":"info","message":"GET /api-docs/","service":"ciphera-backend","timestamp":"2025-08-17 19:10:21","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"}
+{"level":"info","message":"::1 - - [17/Aug/2025:17:10:21 +0000] \"GET /api-docs/ HTTP/1.1\" 200 3045 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36\"","service":"ciphera-backend","timestamp":"2025-08-17 19:10:21"}
+{"ip":"::1","level":"info","message":"GET /api-docs/swagger-ui.css","service":"ciphera-backend","timestamp":"2025-08-17 19:10:21","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"info","message":"GET /api-docs/swagger-ui-bundle.js","service":"ciphera-backend","timestamp":"2025-08-17 19:10:21","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"info","message":"GET /api-docs/swagger-ui-standalone-preset.js","service":"ciphera-backend","timestamp":"2025-08-17 19:10:21","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"info","message":"GET /api-docs/swagger-ui-init.js","service":"ciphera-backend","timestamp":"2025-08-17 19:10:21","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"}
+{"level":"info","message":"::1 - - [17/Aug/2025:17:10:21 +0000] \"GET /api-docs/swagger-ui-init.js HTTP/1.1\" 200 41350 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36\"","service":"ciphera-backend","timestamp":"2025-08-17 19:10:21"}
+{"level":"info","message":"::1 - - [17/Aug/2025:17:10:21 +0000] \"GET /api-docs/swagger-ui.css HTTP/1.1\" 200 155212 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36\"","service":"ciphera-backend","timestamp":"2025-08-17 19:10:21"}
+{"level":"info","message":"::1 - - [17/Aug/2025:17:10:21 +0000] \"GET /api-docs/swagger-ui-standalone-preset.js HTTP/1.1\" 200 229223 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36\"","service":"ciphera-backend","timestamp":"2025-08-17 19:10:21"}
+{"level":"info","message":"::1 - - [17/Aug/2025:17:10:21 +0000] \"GET /api-docs/swagger-ui-bundle.js HTTP/1.1\" 200 1485855 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36\"","service":"ciphera-backend","timestamp":"2025-08-17 19:10:21"}
+{"ip":"::1","level":"info","message":"GET /favicon.ico","service":"ciphera-backend","timestamp":"2025-08-17 19:10:22","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"}
+{"level":"info","message":"::1 - - [17/Aug/2025:17:10:22 +0000] \"GET /favicon.ico HTTP/1.1\" 404 45 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36\"","service":"ciphera-backend","timestamp":"2025-08-17 19:10:22"}
+{"ip":"::1","level":"info","message":"GET /favicon.ico","service":"ciphera-backend","timestamp":"2025-08-17 19:10:24","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"}
+{"level":"info","message":"::1 - - [17/Aug/2025:17:10:24 +0000] \"GET /favicon.ico HTTP/1.1\" 404 45 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36\"","service":"ciphera-backend","timestamp":"2025-08-17 19:10:24"}
+{"level":"info","message":"SIGINT received, shutting down gracefully","service":"ciphera-backend","timestamp":"2025-08-17 19:11:28"}
