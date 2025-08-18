@@ -50,31 +50,6 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // Cookie parser middleware
 app.use(cookieParser());
 
-// Logging middleware
-app.use(morgan('combined', {
-  stream: {
-    write: (message) => logger.info(message.trim())
-  }
-}));
-
-// Request logging
-app.use((req, res, next) => {
-  logger.info(`${req.method} ${req.path}`, {
-    ip: req.ip,
-    userAgent: req.get('User-Agent')
-  });
-  next();
-});
-
-// Health check endpoint
-app.get('/health', (req, res) => {
-  res.json({
-    status: 'OK',
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime()
-  });
-});
-
 // Swagger documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, {
   customCss: '.swagger-ui .topbar { display: none }',
@@ -100,8 +75,6 @@ app.use('/api/auth', authRoutes);
 app.use('/api/scan', scanRoutes);
 app.use('/api/alerts', alertRoutes);
 app.use('/api/dashboard', dashboardRoutes);
-// app.use('/api/ai', aiRoutes);
-// app.use('/api/logs', logsRoutes);
 
 // 404 handler
 app.use('*', (req, res) => {
@@ -128,13 +101,4 @@ app.listen(PORT, () => {
   logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
 });
 
-// Graceful shutdown
-process.on('SIGTERM', () => {
-  logger.info('SIGTERM received, shutting down gracefully');
-  process.exit(0);
-});
 
-process.on('SIGINT', () => {
-  logger.info('SIGINT received, shutting down gracefully');
-  process.exit(0);
-});

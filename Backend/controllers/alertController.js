@@ -42,11 +42,6 @@ export const createAlert = async (req, res) => {
     
     await alert.save();
     
-    logger.info(`Alert created by user ${userId}`, {
-      alertId: alert._id,
-      severity,
-      category
-    });
     
     res.status(201).json({
       success: true,
@@ -180,8 +175,6 @@ export const updateAlert = async (req, res) => {
     
     await alert.save();
     
-    logger.info(`Alert updated by user ${userId}`, { alertId });
-    
     res.status(200).json({
       success: true,
       data: alert.getDetailed(),
@@ -214,8 +207,6 @@ export const resolveAlert = async (req, res) => {
     }
     
     await alert.resolve(userId, notes);
-    
-    logger.info(`Alert resolved by user ${userId}`, { alertId });
     
     res.status(200).json({
       success: true,
@@ -257,8 +248,6 @@ export const snoozeAlert = async (req, res) => {
     
     await alert.snooze(duration);
     
-    logger.info(`Alert snoozed by user ${userId}`, { alertId, duration });
-    
     res.status(200).json({
       success: true,
       data: alert.getDetailed(),
@@ -291,8 +280,6 @@ export const deleteAlert = async (req, res) => {
     
     alert.isArchived = true;
     await alert.save();
-    
-    logger.info(`Alert archived by user ${userId}`, { alertId });
     
     res.status(200).json({
       success: true,
@@ -378,11 +365,6 @@ export const acknowledgeAllAlerts = async (req, res) => {
       { userId, status: 'active', isArchived: false },
       { status: 'monitoring' }
     );
-    
-    logger.info(`All alerts acknowledged by user ${userId}`, { 
-      acknowledgedCount: result.modifiedCount 
-    });
-    
     res.status(200).json({
       success: true,
       data: { acknowledgedCount: result.modifiedCount },

@@ -439,22 +439,16 @@ const seedTrainingModules = async () => {
     // Connect to database
     const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/ciphera';
     await mongoose.connect(mongoUri);
-    logger.info('Connected to MongoDB');
     
     // Clear existing training modules
     await TrainingModule.deleteMany({});
-    logger.info('Cleared existing training modules');
     
     // Insert new training modules
     const insertedModules = await TrainingModule.insertMany(trainingModules);
-    logger.info(`Inserted ${insertedModules.length} training modules`);
     
     // Log the inserted modules
     insertedModules.forEach(module => {
-      logger.info(`Created module: ${module.title} (${module.difficulty})`);
     });
-    
-    logger.info('Training modules seeding completed successfully');
     process.exit(0);
     
   } catch (error) {

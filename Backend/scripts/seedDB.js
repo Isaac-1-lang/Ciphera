@@ -35,9 +35,7 @@ const seedUsers = [
 const connectDB = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI);
-    console.log('MongoDB Connected for seeding');
   } catch (error) {
-    console.error('Database connection error:', error);
     process.exit(1);
   }
 };
@@ -48,16 +46,12 @@ const seedDatabase = async () => {
 
     // Clear existing users
     await User.deleteMany({});
-    console.log('Cleared existing users');
 
     // Create new users
     for (const userData of seedUsers) {
       const user = new User(userData);
       await user.save();
-      console.log(`Created user: ${user.username} (${user.email})`);
     }
-
-    console.log('Database seeding completed successfully');
     process.exit(0);
   } catch (error) {
     console.error('Seeding error:', error);

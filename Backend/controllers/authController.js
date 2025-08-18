@@ -53,9 +53,6 @@ export const register = async (req, res) => {
     const token = generateToken(user._id);
     setTokenCookie(res, token);
 
-    // Log successful registration
-    logger.info(`New user registered: ${user.email}`);
-
     res.status(201).json({
       success: true,
       message: 'User registered successfully',
@@ -118,8 +115,6 @@ export const login = async (req, res) => {
     const token = generateToken(user._id);
     setTokenCookie(res, token);
 
-    // Log successful login
-    logger.info(`User logged in: ${user.email}`);
 
     res.json({
       success: true,
@@ -143,8 +138,6 @@ export const logout = async (req, res) => {
   try {
     // Clear the token cookie
     res.clearCookie('token');
-    
-    logger.info(`User logged out: ${req.user?.email || 'unknown'}`);
     
     res.json({
       success: true,
@@ -207,8 +200,6 @@ export const updateProfile = async (req, res) => {
       });
     }
 
-    logger.info(`Profile updated for user: ${user.email}`);
-
     res.json({
       success: true,
       message: 'Profile updated successfully',
@@ -249,8 +240,6 @@ export const changePassword = async (req, res) => {
     // Update password
     user.password = newPassword;
     await user.save();
-
-    logger.info(`Password changed for user: ${user.email}`);
 
     res.json({
       success: true,

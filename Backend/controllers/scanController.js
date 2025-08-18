@@ -98,12 +98,6 @@ export const scanText = async (req, res) => {
     
     await scan.save();
     
-    logger.info(`Text scan completed for user ${userId}`, {
-      scanId: scan._id,
-      threatCount: threats.length,
-      scanTime
-    });
-    
     res.status(200).json({
       success: true,
       data: scan.getDetailedResults(),
@@ -167,13 +161,6 @@ export const scanFile = async (req, res) => {
     scan.status = 'completed';
     
     await scan.save();
-    
-    logger.info(`File scan completed for user ${userId}`, {
-      scanId: scan._id,
-      fileName: req.file.originalname,
-      threatCount: threats.length,
-      scanTime
-    });
     
     res.status(200).json({
       success: true,
@@ -284,9 +271,6 @@ export const deleteScan = async (req, res) => {
     // Soft delete by archiving
     scan.isArchived = true;
     await scan.save();
-    
-    logger.info(`Scan archived by user ${userId}`, { scanId });
-    
     res.status(200).json({
       success: true,
       message: 'Scan deleted successfully'
