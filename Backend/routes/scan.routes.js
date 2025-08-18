@@ -1,5 +1,6 @@
 import express from 'express';
 import { authenticateToken } from '../middleware/auth.middleware.js';
+import { uploadSingleFile, handleFileUploadError } from '../middleware/fileUpload.middleware.js';
 import {
   scanText,
   scanFile,
@@ -112,7 +113,7 @@ router.post('/text', scanText);
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.post('/file', scanFile);
+router.post('/file', uploadSingleFile, handleFileUploadError, scanFile);
 
 /**
  * @swagger

@@ -1,117 +1,10 @@
 import Scan from '../models/Scan.js';
 import { logger } from '../utils/logger.js';
+import { extractFileContent } from '../middleware/fileUpload.middleware.js';
+import { detectSensitive } from '../utils/detection.js';
 
-// Mock threat detection patterns (in production, this would use AI/ML models)
-const threatPatterns = {
-  email: /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g,
-  phone: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g,
-  creditCard: /\b\d{4}[-\s]?\d{4}[-\s]?\d{4}[-\s]?\d{4}\b/g,
-  ssn: /\b\d{3}-\d{2}-\d{4}\b/g,
-  ipAddress: /\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/g,
-  apiKey: /\b(api[_-]?key|token|secret)[\s]*[:=][\s]*['"]?[A-Za-z0-9]{32,}['"]?/gi,
-  password: /\b(password|passwd|pwd)[\s]*[:=][\s]*['"]?[^\s'"]+['"]?/gi
-};
-
-// Mock threat detection function
-const detectThreats = (content, type) => {
-  const threats = [];
-  
-  // Check for email addresses
-  const emails = content.match(threatPatterns.email);
-  if (emails && emails.length > 0) {
-    threats.push({
-      type: 'Personal Information',
-      severity: 'high',
-      count: emails.length,
-      details: `${emails.length} email address(es) detected`,
-      confidence: 95
-    });
-  }
-  
-  // Check for phone numbers
-  const phones = content.match(threatPatterns.phone);
-  if (phones && phones.length > 0) {
-    threats.push({
-      type: 'Personal Information',
-      severity: 'high',
-      count: phones.length,
-      details: `${phones.length} phone number(s) detected`,
-      confidence: 90
-    });
-  }
-  
-  // Check for credit card patterns
-  const creditCards = content.match(threatPatterns.creditCard);
-  if (creditCards && creditCards.length > 0) {
-    threats.push({
-      type: 'Financial Data',
-      severity: 'critical',
-      count: creditCards.length,
-      details: `${creditCards.length} credit card number pattern(s) detected`,
-      confidence: 85
-    });
-  }
-  
-  // Check for SSN patterns
-  const ssns = content.match(threatPatterns.ssn);
-  if (ssns && ssns.length > 0) {
-    threats.push({
-      type: 'Personal Information',
-      severity: 'critical',
-      count: ssns.length,
-      details: `${ssns.length} Social Security Number pattern(s) detected`,
-      confidence: 90
-    });
-  }
-  
-  // Check for API keys
-  const apiKeys = content.match(threatPatterns.apiKey);
-  if (apiKeys && apiKeys.length > 0) {
-    threats.push({
-      type: 'Credentials',
-      severity: 'critical',
-      count: apiKeys.length,
-      details: `${apiKeys.length} potential API key(s) or token(s) detected`,
-      confidence: 80
-    });
-  }
-  
-  // Check for passwords
-  const passwords = content.match(threatPatterns.password);
-  if (passwords && passwords.length > 0) {
-    threats.push({
-      type: 'Credentials',
-      severity: 'high',
-      count: passwords.length,
-      details: `${passwords.length} potential password(s) detected`,
-      confidence: 75
-    });
-  }
-  
-  // Check for IP addresses (context dependent)
-  const ipAddresses = content.match(threatPatterns.ipAddress);
-  if (ipAddresses && ipAddresses.length > 0) {
-    // Only flag as threat if it's not a common public IP
-    const privateIPs = ipAddresses.filter(ip => {
-      const parts = ip.split('.').map(Number);
-      return (parts[0] === 10) || 
-             (parts[0] === 172 && parts[1] >= 16 && parts[1] <= 31) ||
-             (parts[0] === 192 && parts[1] === 168);
-    });
-    
-    if (privateIPs.length > 0) {
-      threats.push({
-        type: 'Network Information',
-        severity: 'medium',
-        count: privateIPs.length,
-        details: `${privateIPs.length} private IP address(es) detected`,
-        confidence: 70
-      });
-    }
-  }
-  
-  return threats;
-};
+// Use the centralized sensitive data detector
+const detectThreats = (content) => detectSensitive(content);
 
 // Generate recommendations based on detected threats
 const generateRecommendations = (threats) => {
@@ -135,6 +28,17 @@ const generateRecommendations = (threats) => {
         recommendations.push('Avoid exposing internal network details');
         recommendations.push('Use public IP addresses when necessary');
         break;
+      case 'Physical Address':
+        recommendations.push('Remove or generalize physical addresses to protect privacy');
+        recommendations.push('Share only city/region when necessary, not full addresses');
+        break;
+      case 'Health Information':
+        recommendations.push('Remove or de-identify health-related identifiers');
+        recommendations.push('Comply with privacy regulations when sharing health data');
+        break;
+      case 'Links':
+        recommendations.push('Verify links do not expose private systems or tokens');
+        break;
     }
   });
   
@@ -154,7 +58,7 @@ const generateRecommendations = (threats) => {
 export const scanText = async (req, res) => {
   try {
     const { content, tags } = req.body;
-    const userId = req.user.id;
+    const userId = req.user.userId;
     
     if (!content || typeof content !== 'string') {
       return res.status(400).json({
@@ -218,28 +122,31 @@ export const scanText = async (req, res) => {
 // Scan file content
 export const scanFile = async (req, res) => {
   try {
-    const { fileName, fileSize, fileType, content, tags } = req.body;
-    const userId = req.user.id;
+    const { tags } = req.body;
+    const userId = req.user.userId;
     
-    if (!fileName || !fileSize || !fileType || !content) {
+    if (!req.file) {
       return res.status(400).json({
         success: false,
-        message: 'File information and content are required'
+        message: 'File is required'
       });
     }
     
     const startTime = Date.now();
     
+    // Extract content from uploaded file
+    const content = await extractFileContent(req.file);
+    
     // Create scan record
     const scan = new Scan({
       userId,
       type: 'file',
-      fileName,
-      fileSize,
-      fileType,
+      fileName: req.file.originalname,
+      fileSize: req.file.size,
+      fileType: req.file.mimetype,
       content,
       status: 'scanning',
-      tags: tags || [],
+      tags: tags ? JSON.parse(tags) : [],
       metadata: {
         ipAddress: req.ip,
         userAgent: req.get('User-Agent')
@@ -263,7 +170,7 @@ export const scanFile = async (req, res) => {
     
     logger.info(`File scan completed for user ${userId}`, {
       scanId: scan._id,
-      fileName,
+      fileName: req.file.originalname,
       threatCount: threats.length,
       scanTime
     });
@@ -286,7 +193,7 @@ export const scanFile = async (req, res) => {
 // Get scan history for user
 export const getScanHistory = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId;
     const { page = 1, limit = 10, status, type, search } = req.query;
     
     const query = { userId, isArchived: false };
@@ -333,7 +240,7 @@ export const getScanHistory = async (req, res) => {
 export const getScanDetails = async (req, res) => {
   try {
     const { scanId } = req.params;
-    const userId = req.user.id;
+    const userId = req.user.userId;
     
     const scan = await Scan.findOne({ _id: scanId, userId });
     
@@ -363,7 +270,7 @@ export const getScanDetails = async (req, res) => {
 export const deleteScan = async (req, res) => {
   try {
     const { scanId } = req.params;
-    const userId = req.user.id;
+    const userId = req.user.userId;
     
     const scan = await Scan.findOne({ _id: scanId, userId });
     
@@ -397,7 +304,7 @@ export const deleteScan = async (req, res) => {
 // Get scan statistics
 export const getScanStats = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId;
     const { period = '30d' } = req.query;
     
     let dateFilter = {};

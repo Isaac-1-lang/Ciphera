@@ -61,7 +61,7 @@ const scanSchema = new mongoose.Schema({
   }],
   scanTime: {
     type: Number, // in milliseconds
-    required: true
+    required: false
   },
   textLength: {
     type: Number,

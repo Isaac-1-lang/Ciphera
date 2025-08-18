@@ -94,7 +94,7 @@ The Ciphera Data Guard API provides comprehensive endpoints for:
 ## 🔧 Using the Swagger UI
 
 ### 1. Authentication
-1. Navigate to the Swagger UI at `http://localhost:3001/api-docs`
+1. Navigate to the Swagger UI at `http://localhost:3560/api-docs`
 2. For protected endpoints, you'll need to authenticate first
 3. Use the `/api/auth/login` endpoint to get a session
 4. The JWT token will be automatically included in subsequent requests via cookies
@@ -277,7 +277,7 @@ Rate limit headers are included in responses:
 
 ### Using Swagger UI for Testing
 1. Start the backend server: `npm run dev`
-2. Open Swagger UI: `http://localhost:3001/api-docs`
+2. Open Swagger UI: `http://localhost:3560/api-docs`
 3. Test endpoints in the following order:
    - Register a new user
    - Login with credentials
@@ -294,12 +294,12 @@ npm test
 
 ### Environment Variables
 ```env
-PORT=3001
+PORT=3560
 NODE_ENV=development
 MONGODB_URI=mongodb://localhost:27017/ciphera
 JWT_SECRET=your-secret-key-here
 JWT_EXPIRES_IN=7d
-FRONTEND_URL=http://localhost:5173
+FRONTEND_URL=http://localhost:8080
 ```
 
 ### Swagger Configuration

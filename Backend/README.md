@@ -62,7 +62,7 @@ A comprehensive security and data protection backend system built with Node.js, 
    MONGODB_URI
    JWT_SECRET=your-super-secret-jwt-key
    JWT_EXPIRES_IN=7d
-   FRONTEND_URL=http://localhost:5173
+   FRONTEND_URL=http://localhost:8080
    LOG_LEVEL=info
    SESSION_SECRET=your-session-secret
    ```
