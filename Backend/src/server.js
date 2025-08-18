@@ -8,6 +8,7 @@ import dotenv from 'dotenv';
 import swaggerUi from 'swagger-ui-express';
 import { specs } from '../config/swagger.js';
 import { logger } from '../utils/logger.js';
+import { corsOptions } from '../config/cors.js';
 
 // Import routes
 import authRoutes from '../routes/auth.routes.js';
@@ -30,18 +31,7 @@ connectDB();
 app.use(helmet());
 
 // CORS configuration
-app.use(cors({
-  origin: (origin, cb) => {
-    const allowed = [process.env.FRONTEND_URL];
-    // allow chrome extensions
-    if (origin && origin.startsWith('chrome-extension://')) return cb(null, true);
-    if (!origin || allowed.includes(origin)) return cb(null, true);
-    return cb(null, false);
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
-}));
+app.use(cors(corsOptions));
 
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
