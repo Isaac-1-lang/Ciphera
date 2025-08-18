@@ -32,7 +32,7 @@ app.use(helmet());
 // CORS configuration
 app.use(cors({
   origin: (origin, cb) => {
-    const allowed = [process.env.FRONTEND_URL || 'http://localhost:8080'];
+    const allowed = [process.env.FRONTEND_URL];
     // allow chrome extensions
     if (origin && origin.startsWith('chrome-extension://')) return cb(null, true);
     if (!origin || allowed.includes(origin)) return cb(null, true);
