@@ -31,7 +31,13 @@ app.use(helmet());
 
 // CORS configuration
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:8080',
+  origin: (origin, cb) => {
+    const allowed = [process.env.FRONTEND_URL || 'http://localhost:8080'];
+    // allow chrome extensions
+    if (origin && origin.startsWith('chrome-extension://')) return cb(null, true);
+    if (!origin || allowed.includes(origin)) return cb(null, true);
+    return cb(null, false);
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
