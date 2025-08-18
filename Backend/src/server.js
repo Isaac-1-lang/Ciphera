@@ -3,17 +3,17 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
-import connectDB from './config/db.js';
+import connectDB from '../config/db.js';
 import dotenv from 'dotenv';
 import swaggerUi from 'swagger-ui-express';
-import { specs } from './config/swagger.js';
-import { logger } from './utils/logger.js';
+import { specs } from '../config/swagger.js';
+import { logger } from '../utils/logger.js';
 
 // Import routes
-import authRoutes from './routes/auth.routes.js';
-import scanRoutes from './routes/scan.routes.js';
-import alertRoutes from './routes/alert.routes.js';
-import dashboardRoutes from './routes/dashboard.routes.js';
+import authRoutes from '../routes/auth.routes.js';
+import scanRoutes from '../routes/scan.routes.js';
+import alertRoutes from '../routes/alert.routes.js';
+import dashboardRoutes from '../routes/dashboard.routes.js';
 // import aiRoutes from './routes/ai.routes.js';
 // import logsRoutes from './routes/logs.routes.js';
 

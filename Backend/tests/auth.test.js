@@ -2,7 +2,7 @@ import request from 'supertest';
 import { expect } from 'chai';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import app from '../server.js';
+import app from '../src/server.js';
 import User from '../models/User.js';
 
 dotenv.config();

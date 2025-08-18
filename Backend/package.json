@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "test": "mocha --experimental-modules --es-module-specifier-resolution=node tests/**/*.test.js",
-    "dev": "nodemon server.js",
-    "start": "node server.js",
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
     "seed": "node scripts/seedDB.js",
     "seed:training": "node scripts/seedTrainingModules.js"
   },
