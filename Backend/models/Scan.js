@@ -109,6 +109,7 @@ scanSchema.methods.getSummary = function() {
     content: this.type === 'text' ? this.content.substring(0, 100) + '...' : this.fileName,
     status: this.status,
     threatCount: this.threatCount,
+    threats: this.threats, // Include threats array for frontend display
     highestSeverity: this.highestSeverity,
     scanTime: this.scanTime,
     createdAt: this.createdAt,

@@ -5,7 +5,8 @@ import {
   logout,
   getProfile,
   updateProfile,
-  changePassword
+  changePassword,
+  requestEmailChange
 } from '../controllers/authController.js';
 import { authenticateToken } from '../middleware/auth.middleware.js';
 import {
@@ -176,7 +177,7 @@ router.post('/logout', logout);
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.get('/profile', getProfile);
+router.get('/profile', authenticateToken, getProfile);
 
 /**
  * @swagger
@@ -227,7 +228,7 @@ router.get('/profile', getProfile);
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.put('/profile', validateUpdateProfile, updateProfile);
+router.put('/profile', authenticateToken, validateUpdateProfile, updateProfile);
 
 /**
  * @swagger
@@ -283,6 +284,41 @@ router.put('/profile', validateUpdateProfile, updateProfile);
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.put('/change-password', validateChangePassword, changePassword);
+router.put('/change-password', authenticateToken, validateChangePassword, changePassword);
+
+/**
+ * @swagger
+ * /auth/request-email-change:
+ *   post:
+ *     summary: Request email change
+ *     tags: [Authentication]
+ *     security:
+ *       - cookieAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - newEmail
+ *               - currentPassword
+ *             properties:
+ *               newEmail:
+ *                 type: string
+ *                 format: email
+ *                 description: New email address
+ *               currentPassword:
+ *                 type: string
+ *                 description: Current password for verification
+ *     responses:
+ *       200:
+ *         description: Email change request submitted
+ *       400:
+ *         description: Validation error or email already taken
+ *       401:
+ *         description: Unauthorized
+ */
+router.post('/request-email-change', authenticateToken, requestEmailChange);
 
 export default router;

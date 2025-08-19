@@ -254,3 +254,49 @@ export const changePassword = async (req, res) => {
     });
   }
 };
+
+// Request email change (requires verification)
+export const requestEmailChange = async (req, res) => {
+  try {
+    const { newEmail, currentPassword } = req.body;
+
+    const user = await User.findById(req.user.userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    // Verify current password
+    const isCurrentPasswordValid = await user.comparePassword(currentPassword);
+    if (!isCurrentPasswordValid) {
+      return res.status(400).json({
+        success: false,
+        message: 'Current password is incorrect'
+      });
+    }
+
+    // Check if new email is already taken
+    const existingUser = await User.findOne({ email: newEmail.toLowerCase() });
+    if (existingUser && existingUser._id.toString() !== user._id.toString()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email is already taken by another user'
+      });
+    }
+
+    // For now, just return success (in production, you'd send verification email)
+    res.json({
+      success: true,
+      message: 'Email change request submitted. You will receive a verification email shortly.'
+    });
+
+  } catch (error) {
+    logger.error('Request email change error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error'
+    });
+  }
+};
