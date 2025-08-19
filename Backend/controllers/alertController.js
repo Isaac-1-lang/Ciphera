@@ -15,7 +15,7 @@ export const createAlert = async (req, res) => {
       tags
     } = req.body;
     
-    const userId = req.user.id;
+    const userId = req.user.userId;
     
     if (!title || !description || !severity || !category || !source) {
       return res.status(400).json({
@@ -61,7 +61,7 @@ export const createAlert = async (req, res) => {
 // Get all alerts for user
 export const getAlerts = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId;
     const { 
       page = 1, 
       limit = 10, 
@@ -119,7 +119,7 @@ export const getAlerts = async (req, res) => {
 export const getAlertById = async (req, res) => {
   try {
     const { alertId } = req.params;
-    const userId = req.user.id;
+    const userId = req.user.userId;
     
     const alert = await Alert.findOne({ _id: alertId, userId });
     
@@ -149,7 +149,7 @@ export const getAlertById = async (req, res) => {
 export const updateAlert = async (req, res) => {
   try {
     const { alertId } = req.params;
-    const userId = req.user.id;
+    const userId = req.user.userId;
     const updateData = req.body;
     
     const alert = await Alert.findOne({ _id: alertId, userId });
@@ -194,7 +194,7 @@ export const updateAlert = async (req, res) => {
 export const resolveAlert = async (req, res) => {
   try {
     const { alertId } = req.params;
-    const userId = req.user.id;
+    const userId = req.user.userId;
     const { notes } = req.body;
     
     const alert = await Alert.findOne({ _id: alertId, userId });
@@ -227,7 +227,7 @@ export const resolveAlert = async (req, res) => {
 export const snoozeAlert = async (req, res) => {
   try {
     const { alertId } = req.params;
-    const userId = req.user.id;
+    const userId = req.user.userId;
     const { duration } = req.body; // duration in milliseconds
     
     if (!duration || duration < 300000) { // minimum 5 minutes
@@ -267,7 +267,7 @@ export const snoozeAlert = async (req, res) => {
 export const deleteAlert = async (req, res) => {
   try {
     const { alertId } = req.params;
-    const userId = req.user.id;
+    const userId = req.user.userId;
     
     const alert = await Alert.findOne({ _id: alertId, userId });
     
@@ -298,7 +298,7 @@ export const deleteAlert = async (req, res) => {
 // Get alert statistics
 export const getAlertStats = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId;
     const { period = '30d' } = req.query;
     
     let dateFilter = {};
@@ -359,7 +359,7 @@ export const getAlertStats = async (req, res) => {
 // Acknowledge all alerts
 export const acknowledgeAllAlerts = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId;
     
     const result = await Alert.updateMany(
       { userId, status: 'active', isArchived: false },

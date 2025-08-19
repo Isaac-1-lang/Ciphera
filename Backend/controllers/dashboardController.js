@@ -6,7 +6,7 @@ import { logger } from '../utils/logger.js';
 // Get comprehensive dashboard data
 export const getDashboardData = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId;
     const { period = '30d' } = req.query;
     
     let dateFilter = {};
@@ -201,7 +201,7 @@ const calculateSecurityScore = (metrics) => {
 // Get detailed analytics for reports
 export const getAnalytics = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId;
     const { type = 'security', period = '30d' } = req.query;
     
     let dateFilter = {};
