@@ -1,7 +1,7 @@
 export const corsOptions = {
   origin: (origin, cb) => {
     const allowedOrigins = [
-      'https://ciphera-data-guard.onrender.com'
+      'https://ciphera.onrender.com'
     ];
 
     if (!origin) {
