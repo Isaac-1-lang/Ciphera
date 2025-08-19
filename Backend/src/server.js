@@ -15,10 +15,7 @@ import authRoutes from '../routes/auth.routes.js';
 import scanRoutes from '../routes/scan.routes.js';
 import alertRoutes from '../routes/alert.routes.js';
 import dashboardRoutes from '../routes/dashboard.routes.js';
-// import aiRoutes from './routes/ai.routes.js';
-// import logsRoutes from './routes/logs.routes.js';
 
-// Load environment variables
 dotenv.config();
 
 const app = express();

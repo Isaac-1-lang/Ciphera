@@ -1,57 +1,25 @@
-// CORS Configuration
 export const corsOptions = {
   origin: (origin, cb) => {
-    // In development, allow all origins for easier frontend development
-    if (process.env.NODE_ENV === 'development') {
-      return cb(null, true);
-    }
-    
-    // Parse multiple frontend URLs from environment variable
-    const frontendUrls = process.env.FRONTEND_URL 
-      ? process.env.FRONTEND_URL.split(',').map(url => url.trim())
-      : ['http://localhost:8080'];
-    
-    // Common development ports
-    const devPorts = [
-      'http://localhost:3000',  // React
-      'http://localhost:5173',  // Vite
-      'http://localhost:4200',  // Angular
-      'http://localhost:8080',  // Vue
-      'http://localhost:3001',  // Alternative React port
-      'http://localhost:5174',  // Alternative Vite port
+    const allowedOrigins = [
+      'https://ciphera-data-guard.onrender.com'
     ];
-    
-    // Combine allowed origins
-    const allowedOrigins = [...frontendUrls, ...devPorts];
-    
-    // Allow chrome extensions
-    if (origin && origin.startsWith('chrome-extension://')) {
-      return cb(null, true);
-    }
-    
-    // Allow requests with no origin (like mobile apps, Postman, or server-to-server)
+
     if (!origin) {
       return cb(null, true);
     }
-    
-    // Check if origin is in allowed list
+
     if (allowedOrigins.includes(origin)) {
       return cb(null, true);
     }
-    
-    // For production, log blocked origins for debugging
-    if (process.env.NODE_ENV === 'production') {
-      console.log(`CORS blocked request from: ${origin}`);
-      console.log(`Allowed origins: ${allowedOrigins.join(', ')}`);
-    }
-    
-    return cb(null, false);
+
+    console.log(`❌ CORS blocked request from: ${origin}`);
+    return cb(new Error('Not allowed by CORS'));
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: [
-    'Content-Type', 
-    'Authorization', 
+    'Content-Type',
+    'Authorization',
     'X-Requested-With',
     'Accept',
     'Origin',
@@ -61,30 +29,21 @@ export const corsOptions = {
     'X-Client-Version'
   ],
   exposedHeaders: [
-    'Content-Length', 
+    'Content-Length',
     'X-Requested-With',
     'X-Total-Count',
     'X-Page-Count'
   ],
-  maxAge: 86400, // Cache preflight response for 24 hours
+  maxAge: 86400,
   preflightContinue: false,
   optionsSuccessStatus: 204
 };
 
-// Development CORS options (more permissive)
 export const devCorsOptions = {
-  origin: true, // Allow all origins in development
+  origin: true,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-  allowedHeaders: [
-    'Content-Type', 
-    'Authorization', 
-    'X-Requested-With',
-    'Accept',
-    'Origin',
-    'Access-Control-Request-Method',
-    'Access-Control-Request-Headers'
-  ],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
   exposedHeaders: ['Content-Length', 'X-Requested-With'],
   maxAge: 86400
 };
