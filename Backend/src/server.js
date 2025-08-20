@@ -62,6 +62,13 @@ app.use('/api/scan', scanRoutes);
 app.use('/api/alerts', alertRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 
+app.get('/', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'Ciphera Data Guard API is running'
+  });
+});
+
 // 404 handler
 app.use('*', (req, res) => {
   res.status(404).json({
