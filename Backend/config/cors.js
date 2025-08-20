@@ -1,7 +1,7 @@
 export const corsOptions = {
   origin: (origin, cb) => {
     const allowedOrigins = [
-      'https://ciphera.onrender.com','https://uptimerobot.com',
+      'https://ciphera.onrender.com','https://uptimerobot.com','http://localhost:8080'
     ];
 
     if (!origin) {
