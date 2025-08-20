@@ -11,12 +11,20 @@ const generateToken = (userId) => {
 
 // Set token in HTTP-only cookie
 const setTokenCookie = (res, token) => {
-  res.cookie('token', token, {
+  const isProd = process.env.NODE_ENV === 'production';
+  const cookieOptions = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-    maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
-  });
+    secure: isProd,
+    sameSite: isProd ? 'none' : 'lax',
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    path: '/'
+  };
+
+  if (process.env.COOKIE_DOMAIN) {
+    cookieOptions.domain = process.env.COOKIE_DOMAIN;
+  }
+
+  res.cookie('token', token, cookieOptions);
 };
 
 // Register new user
@@ -136,8 +144,20 @@ export const login = async (req, res) => {
 // Logout user
 export const logout = async (req, res) => {
   try {
-    // Clear the token cookie
-    res.clearCookie('token');
+    // Clear the token cookie with matching options used when setting it
+    const isProd = process.env.NODE_ENV === 'production';
+    const clearOptions = {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: isProd ? 'none' : 'lax',
+      path: '/'
+    };
+
+    if (process.env.COOKIE_DOMAIN) {
+      clearOptions.domain = process.env.COOKIE_DOMAIN;
+    }
+
+    res.clearCookie('token', clearOptions);
     
     res.json({
       success: true,
